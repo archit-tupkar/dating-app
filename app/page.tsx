@@ -1,13 +1,54 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
 import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
+import { supabase } from '@/lib/supabase'
 
 export default function Home() {
+  const { user, isSignedIn, isLoaded } = useUser()
+  const router = useRouter()
+  const [checking, setChecking] = useState(true)
+
+  useEffect(() => {
+    if (!isLoaded) return
+
+    if (!isSignedIn) {
+      setChecking(false)
+      return
+    }
+
+    async function checkProfile() {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('clerk_user_id', user!.id)
+        .maybeSingle()
+
+      if (!data) {
+        router.push('/onboarding')
+      } else {
+        setChecking(false)
+      }
+    }
+
+    checkProfile()
+  }, [isLoaded, isSignedIn, user, router])
+
+  if (!isLoaded || checking) {
+    return (
+      <main className="min-h-screen bg-[#3B0A0A] flex items-center justify-center">
+        <p className="text-[#FDF3E3]" style={{ fontFamily: 'var(--font-body)' }}>Loading...</p>
+      </main>
+    )
+  }
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#3B0A0A] flex flex-col items-center justify-center px-6">
-      {/* ambient glow blobs */}
       <div className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[#F2A93B]/20 blur-3xl" style={{ animation: 'float 8s ease-in-out infinite' }} />
       <div className="pointer-events-none absolute -bottom-32 -right-16 w-[28rem] h-[28rem] rounded-full bg-[#D4A017]/15 blur-3xl" style={{ animation: 'float 10s ease-in-out infinite 1s' }} />
 
-      {/* top-right auth controls */}
       <div className="absolute top-6 right-6 z-20">
         <Show when="signed-out">
           <div className="flex gap-3" style={{ animation: 'fadeInUp 0.7s ease-out 0.3s both' }}>
@@ -28,7 +69,6 @@ export default function Home() {
         </Show>
       </div>
 
-      {/* garland / toran - signature element */}
       <svg
         width="360"
         height="70"
@@ -50,30 +90,19 @@ export default function Home() {
         })}
       </svg>
 
-      {/* headline */}
       <div className="text-center z-10" style={{ animation: 'fadeInUp 0.8s ease-out 0.15s both' }}>
-        <h1
-          className="text-6xl sm:text-7xl text-[#FDF3E3] mb-4"
-          style={{ fontFamily: 'var(--font-display)' }}
-        >
+        <h1 className="text-6xl sm:text-7xl text-[#FDF3E3] mb-4" style={{ fontFamily: 'var(--font-display)' }}>
           shaadikrlo.com
         </h1>
-        <p
-          className="text-[#F2A93B] text-lg tracking-wide"
-          style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-        >
+        <p className="text-[#F2A93B] text-lg tracking-wide" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
           Just get married already.
         </p>
       </div>
 
-      {/* CTA for signed-out visitors, centered below tagline */}
       <Show when="signed-out">
         <div className="mt-10 z-10" style={{ animation: 'fadeInUp 0.9s ease-out 0.45s both' }}>
           <SignUpButton mode="modal">
-            <button
-              className="px-8 py-3 rounded-full bg-[#F2A93B] text-[#3B0A0A] font-semibold text-base hover:bg-[#FDF3E3] transition-colors shadow-lg"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+            <button className="px-8 py-3 rounded-full bg-[#F2A93B] text-[#3B0A0A] font-semibold text-base hover:bg-[#FDF3E3] transition-colors shadow-lg" style={{ fontFamily: 'var(--font-body)' }}>
               Find your match
             </button>
           </SignUpButton>
