@@ -93,9 +93,12 @@ export default function Discover() {
       <div className="pointer-events-none absolute -bottom-32 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#D4A017]/10 blur-3xl" style={{ animation: 'float 11s ease-in-out infinite 1s' }} />
 
       <div className="w-full max-w-md flex justify-between items-center z-10 mb-6">
-        <h1 className="text-2xl text-[#FDF3E3]" style={{ fontFamily: 'var(--font-display)' }}>
-          Discover
-        </h1>
+        <div className="flex items-center gap-4">
+  <h1 className="text-2xl text-[#FDF3E3]" style={{ fontFamily: 'var(--font-display)' }}>
+    Discover
+  </h1>
+  <a href="/matches" className="text-[#F2A93B] text-sm underline">Matches</a>
+</div>
         <UserButton />
       </div>
 
