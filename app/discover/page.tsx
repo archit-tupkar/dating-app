@@ -51,8 +51,9 @@ export default function Discover() {
   }, [user])
 
   useEffect(() => {
-    loadProfiles()
-  }, [loadProfiles])
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  loadProfiles()
+}, [loadProfiles])
 
   async function handleSwipe(direction: 'like' | 'pass') {
     if (!user) return
