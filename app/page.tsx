@@ -110,9 +110,13 @@ export default function Home() {
       </Show>
 
       <Show when="signed-in">
-        <div className="mt-6 z-10 text-[#FDF3E3]" style={{ fontFamily: 'var(--font-body)' }}>
-          You&apos;re in. Let&apos;s find your match.
-        </div>
+        <a
+          href="/discover"
+          className="mt-6 z-10 px-8 py-3 rounded-full bg-[#F2A93B] text-[#3B0A0A] font-semibold hover:bg-[#FDF3E3] transition-colors shadow-lg"
+          style={{ fontFamily: 'var(--font-body)' }}
+        >
+          Start discovering
+        </a>
       </Show>
     </main>
   )
